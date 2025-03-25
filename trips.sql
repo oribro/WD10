@@ -1,3 +1,52 @@
+CREATE PROCEDURE [dbo].[spTripsBetween_Date1_Date2]
+@StartDate DATETIME,
+@EndDate DATETIME
+as
+begin
+    SELECT name, start_date, end_date
+    FROM Trip
+    WHERE start_date BETWEEN @StartDate AND @EndDate AND
+	end_date BETWEEN @StartDate AND @EndDate 
+end
+GO
+
+CREATE OR ALTER PROCEDURE [dbo].[spPostTrips]
+@Name VARCHAR(50),
+@StartDate DATETIME,
+@EndDate DATETIME,
+@Price MONEY
+as
+begin
+    INSERT INTO Trip (name, start_date, end_date, price) VALUES
+	(@Name, @StartDate, @EndDate, @Price)
+end
+GO
+
+CREATE OR ALTER PROCEDURE [dbo].[spPutTrips]
+@Id INT,
+@Name VARCHAR(50),
+@StartDate DATETIME,
+@EndDate DATETIME,
+@Price MONEY
+as
+begin
+    UPDATE Trip
+	SET name = @Name, start_date = @StartDate, end_date = @EndDate, price = @Price
+	WHERE id = @Id
+end
+GO
+
+CREATE OR ALTER PROCEDURE [dbo].[spDeleteTrips]
+@Id INT
+as
+begin
+    DELETE FROM Trip
+	WHERE id = @Id
+end
+GO
+
+exec [dbo].[spTripsBetween_Date1_Date2] '2025-01-01','2025-06-30'
+
 DROP DATABASE IF EXISTS TripsDB;
 GO
 
@@ -160,16 +209,4 @@ INSERT INTO Review (trip_id, user_id, rating, comment) VALUES
 (10, 10, 5, 'Hollywood was magical!');
 
 
-CREATE PROCEDURE [dbo].[spTripsBetween_Date1_Date2]
-@StartDate DATETIME,
-@EndDate DATETIME
-as
-begin
-    SELECT name, start_date, end_date
-    FROM Trip
-    WHERE start_date BETWEEN @StartDate AND @EndDate AND
-	end_date BETWEEN @StartDate AND @EndDate 
-end
-GO
-
-exec [dbo].[spTripsBetween_Date1_Date2] '2025-01-01','2025-06-30'
+SELECT * FROM Trip
