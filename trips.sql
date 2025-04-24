@@ -45,6 +45,24 @@ begin
 end
 GO
 
+CREATE PROCEDURE getUserByUsername
+    @username VARCHAR(50)
+AS
+BEGIN
+    SELECT id, username, password
+    FROM users
+    WHERE username = @username;
+END
+
+CREATE PROCEDURE addUser
+    @username VARCHAR(50),
+    @password VARCHAR(50)
+AS
+BEGIN
+    INSERT INTO users (username, password)
+    VALUES (@username, @password);
+END
+
 exec [dbo].[spTripsBetween_Date1_Date2] '2025-01-01','2025-06-30'
 
 DROP DATABASE IF EXISTS TripsDB;
@@ -90,6 +108,7 @@ id INT PRIMARY KEY IDENTITY(1,1),
 first_name VARCHAR(50) NOT NULL,
 last_name VARCHAR(50) NOT NULL,
 email VARCHAR(50) NOT NULL,
+username VARCHAR(50) NOT NULL UNIQUE,
 password VARCHAR(50) NOT NULL,
 phone VARCHAR(50),
 );

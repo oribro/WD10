@@ -1,10 +1,17 @@
 const express = require("express");
 const trips = require("./trips");
+const cookieparser = require("cookie-parser");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const authenticateToken = require("./authMiddleware");
+require("dotenv").config();
+
 const app = express();
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 3000;
 
 app.use(express.json()); // Middleware to parse requests with JSON body
 app.use(express.static("public")); // folder to serve our static files
+app.use(cookieparser());
 
 app.get("/trips", async (req, res) => {
   const startDate = req.query.startDate; // Get startDate from query parameter
@@ -84,6 +91,41 @@ app.delete("/trips/:id", async (req, res) => {
     console.error("Error:", error);
     res.status(500).send({ error: "Failed to delete trips." });
   }
+});
+
+app.post("/signup", async (req, res) => {
+  const { username, password } = req.body;
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await MyRepository.addUser(username, hashedPassword);
+    res.status(201).json({ message: "User registered" });
+  } catch {
+    res.status(500).json({ message: "Error registering user" });
+  }
+});
+
+app.post("/signin", async (req, res) => {
+  const { username, password } = req.body;
+  try {
+    const user = await MyRepository.getUserByUsername(username);
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
+
+    //     --- Dont forget to add JWT_SECRET in .env ---
+    const token = jwt.sign(
+      { username: user.username },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+    res.json({ token });
+  } catch {
+    res.status(500).json({ message: "Error signing in" });
+  }
+});
+
+app.get("/protected", authenticateToken, (req, res) => {
+  res.json({ message: `Welcome ${req.user.username}, you have access!` });
 });
 
 app.listen(port, () => {
