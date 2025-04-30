@@ -4,6 +4,7 @@ const cookieparser = require("cookie-parser");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const authenticateToken = require("./authMiddleware");
+const myRepository = require("./myRepository");
 require("dotenv").config();
 
 const app = express();
@@ -94,12 +95,20 @@ app.delete("/trips/:id", async (req, res) => {
 });
 
 app.post("/signup", async (req, res) => {
-  const { username, password } = req.body;
+  const { firstName, lastName, email, username, password, phone } = req.body;
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    await MyRepository.addUser(username, hashedPassword);
+    await myRepository.addUser(
+      firstName,
+      lastName,
+      email,
+      username,
+      hashedPassword,
+      phone
+    );
     res.status(201).json({ message: "User registered" });
-  } catch {
+  } catch (err) {
+    console.error("Signup error:", err);
     res.status(500).json({ message: "Error registering user" });
   }
 });
@@ -107,7 +116,7 @@ app.post("/signup", async (req, res) => {
 app.post("/signin", async (req, res) => {
   const { username, password } = req.body;
   try {
-    const user = await MyRepository.getUserByUsername(username);
+    const user = await myRepository.getUserByUsername(username);
     if (!user || !(await bcrypt.compare(password, user.password))) {
       return res.status(401).json({ message: "Invalid credentials" });
     }

@@ -54,13 +54,17 @@ BEGIN
     WHERE username = @username;
 END
 
-CREATE PROCEDURE addUser
+CREATE OR ALTER PROCEDURE addUser
+	@firstName VARCHAR(50), 
+	@lastName VARCHAR(50), 
+	@email VARCHAR(50),
     @username VARCHAR(50),
-    @password VARCHAR(50)
+    @password VARCHAR(256),
+	@phone VARCHAR(50)
 AS
 BEGIN
-    INSERT INTO users (username, password)
-    VALUES (@username, @password);
+    INSERT INTO Users (first_name, last_name, email, username, password, phone)
+    VALUES (@firstName,@lastName, @email,@username,@password,@phone);
 END
 
 exec [dbo].[spTripsBetween_Date1_Date2] '2025-01-01','2025-06-30'
@@ -101,7 +105,6 @@ FOREIGN KEY (trip_id) REFERENCES Trip(id) ON DELETE CASCADE,
 FOREIGN KEY (location_id) REFERENCES Location(id) ON DELETE CASCADE
 );
 
-
 CREATE TABLE Users
 ( 
 id INT PRIMARY KEY IDENTITY(1,1),
@@ -109,7 +112,7 @@ first_name VARCHAR(50) NOT NULL,
 last_name VARCHAR(50) NOT NULL,
 email VARCHAR(50) NOT NULL,
 username VARCHAR(50) NOT NULL UNIQUE,
-password VARCHAR(50) NOT NULL,
+password VARCHAR(256) NOT NULL,
 phone VARCHAR(50),
 );
 
