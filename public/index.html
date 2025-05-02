@@ -1,62 +1,23 @@
-<form id="dateForm">
-    <label for="startDate" style="direction: rtl; text-align: right; display: block; margin-bottom: 5px;">תאריך
-        התחלה:</label>
-    <input type="date" id="startDate" name="startDate" style="display: block; margin-bottom: 10px;">
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+  <link rel="stylesheet" href="index.css" />
+  <head>
+    <meta charset="UTF-8" />
+    <title>טיולים</title>
+  </head>
+  <body>
+    <form id="dateForm">
+      <label for="startDate">תאריך התחלה:</label>
+      <input type="date" id="startDate" name="startDate" />
 
-    <label for="endDate" style="direction: rtl; text-align: right; display: block; margin-bottom: 5px;">תאריך
-        סיום:</label>
-    <input type="date" id="endDate" name="endDate" style="display: block; margin-bottom: 10px;">
+      <label for="endDate">תאריך סיום:</label>
+      <input type="date" id="endDate" name="endDate" />
 
-    <button type="button" onclick="submitDates()"
-        style="padding: 10px 20px; background-color: #147e37; color: white; border: none; cursor: pointer; display: block; margin-top: 10px;">שלח
-        תאריכים</button>
-</form>
+      <button type="button" onclick="submitDates()">שלח תאריכים</button>
+    </form>
 
-<div id="myDiv" style="margin-top: 20px; padding: 10px; border: 1px solid #ccc; direction: rtl; text-align: right;">
-    <p>תגובה מהשרת תוצג כאן.</p>
-</div>
+    <div id="tripContainer"></div>
 
-<script>
-    async function submitDates() {
-        const startDate = document.querySelector('#startDate').value;
-        const endDate = document.querySelector('#endDate').value;
-
-        if (!startDate || !endDate) {
-            alert('יש לבחור תאריכי התחלה וסיום.');
-            return;
-        }
-
-        try {
-            const response = await fetch(`/trips?startDate=${startDate}&endDate=${endDate}`);
-            const data = await response.json();
-
-            const myDiv = document.querySelector('#myDiv');
-            myDiv.innerHTML = '<p><b>תגובה מהשרת:</b></p>'; // Clear previous content
-
-            if (Array.isArray(data) && data.length > 0) {
-                data.forEach(item => {
-                    for (const key in item) {
-                        if (item.hasOwnProperty(key)) {
-                            myDiv.innerHTML += `<p>${key}: ${item[key]}</p>`;
-                        }
-                    }
-                    myDiv.innerHTML += '<hr>'; // Add a separator between records
-                });
-            } else if (data && typeof data === 'object') {
-                // Handle single object response
-                for (const key in data) {
-                    if (data.hasOwnProperty(key)) {
-                        myDiv.innerHTML += `<p>${key}: ${data[key]}</p>`;
-                    }
-                }
-            }
-            else {
-                myDiv.innerHTML += '<p>אין נתונים זמינים.</p>';
-            }
-
-        } catch (error) {
-            console.error('שגיאה:', error);
-            document.querySelector('#myDiv').textContent = 'אירעה שגיאה בשליחת הבקשה לשרת.';
-        }
-    }
-</script>
+    <script src="index.js"></script>
+  </body>
+</html>

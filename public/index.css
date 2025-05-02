@@ -1,0 +1,55 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: #f9f9f9;
+  }
+
+  form {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px #ccc;
+    max-width: 400px;
+  }
+
+  input[type="date"],
+  button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+  }
+
+  #tripContainer {
+    margin-top: 30px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  .trip-card {
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    text-align: right;
+    direction: rtl;
+  }
+
+  .trip-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+  }
+
+  .trip-card .info {
+    padding: 15px;
+  }
+
+  .trip-card .info h3 {
+    margin: 0 0 10px;
+  }
+
+  .trip-card .info p {
+    margin: 4px 0;
+  }

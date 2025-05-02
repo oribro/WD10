@@ -1,5 +1,6 @@
 const express = require("express");
 const trips = require("./trips");
+const orders = require("./orders");
 const cookieparser = require("cookie-parser");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -94,6 +95,34 @@ app.delete("/trips/:id", async (req, res) => {
   }
 });
 
+app.post("/orders/:tripId", authenticateToken, async (req, res) => {
+  const tripId = req.params.tripId;
+  const username = req.user?.username;
+  const date = new Date();
+  const status = "Ordered";
+
+  if (!tripId || !username) {
+    return res.status(400).send({
+      error: "tripId and username are required query parameters.",
+    });
+  }
+
+  try {
+    const user = await myRepository.getUserByUsername(username);
+    if (!user) {
+      return res.status(404).send({ error: "User not found" });
+    }
+
+    const userId = user.id;
+
+    await orders.postOrders(tripId, userId, date, status);
+    res.send("Posted order");
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).send({ error: "Failed to post order." });
+  }
+});
+
 app.post("/signup", async (req, res) => {
   const { firstName, lastName, email, username, password, phone } = req.body;
   try {
@@ -127,10 +156,23 @@ app.post("/signin", async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
-    res.json({ token });
-  } catch {
-    res.status(500).json({ message: "Error signing in" });
+    res
+      .cookie("token", token, {
+        httpOnly: true, // Prevents JS access (recommended for security)
+        secure: false, // Set to true in production with HTTPS
+        sameSite: "lax", // Or "strict" depending on your needs
+        maxAge: 3600000, // 1 hour
+      })
+      .json({ message: "Login successful" });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "Error signing in" });
   }
+});
+
+app.post("/signout", (req, res) => {
+  res.clearCookie("token");
+  res.json({ message: "Logged out" });
 });
 
 app.get("/protected", authenticateToken, (req, res) => {
