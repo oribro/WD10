@@ -1,6 +1,7 @@
 const express = require("express");
 const trips = require("./trips");
 const orders = require("./orders");
+const reviews = require("./reviews");
 const cookieparser = require("cookie-parser");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -28,6 +29,29 @@ app.get("/trips", async (req, res) => {
   try {
     const requestedTrips = await trips.getTrips(startDate, endDate);
     res.json(requestedTrips);
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).send({ error: "Failed to fetch trips." });
+  }
+});
+
+app.get("/myorders", authenticateToken, async (req, res) => {
+  const username = req.user?.username;
+
+  if (!username) {
+    return res.status(400).send({
+      error: "username is a required query parameters.",
+    });
+  }
+  try {
+    const user = await myRepository.getUserByUsername(username);
+    if (!user) {
+      return res.status(404).send({ error: "User not found" });
+    }
+
+    const userId = user.id;
+    const requestedOrders = await orders.getOrders(userId);
+    res.json(requestedOrders);
   } catch (error) {
     console.error("Error:", error);
     res.status(500).send({ error: "Failed to fetch trips." });
@@ -123,6 +147,39 @@ app.post("/orders/:tripId", authenticateToken, async (req, res) => {
   }
 });
 
+app.get("/reviews/:tripId", async (req, res) => {
+  const tripId = req.params.tripId;
+
+  if (!tripId) {
+    return res.status(400).send({
+      error: "tripId is required query parameter.",
+    });
+  }
+
+  try {
+    const requestedReviews = await reviews.getReviews(tripId);
+    res.json(requestedReviews);
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).send({ error: "Failed to get reviews." });
+  }
+});
+
+app.post("/reviews/:tripId", authenticateToken, async (req, res) => {
+  const { tripId } = req.params;
+  const { rating, comment } = req.body;
+  const username = req.user.username;
+
+  try {
+    const user = await myRepository.getUserByUsername(username);
+    await reviews.postReview(tripId, user.id, rating, comment);
+    res.json({ message: "Review submitted successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to submit review" });
+  }
+});
+
 app.post("/signup", async (req, res) => {
   const { firstName, lastName, email, username, password, phone } = req.body;
   try {
@@ -173,6 +230,7 @@ app.post("/signin", async (req, res) => {
 app.post("/signout", (req, res) => {
   res.clearCookie("token");
   res.json({ message: "Logged out" });
+  //res.redirect("/welcome.html");
 });
 
 app.get("/protected", authenticateToken, (req, res) => {

@@ -11,13 +11,13 @@ const config = {
   },
 };
 
-async function getOrders(userId) {
+async function getReviews(tripId) {
   try {
     let pool = await sql.connect(config);
     let result = await pool
       .request()
-      .input("UserId", sql.Int, userId)
-      .execute("spGetOrdersForUser");
+      .input("TripId", sql.Int, tripId)
+      .execute("spGetReviewsForTrip");
 
     console.log(result.recordset);
     return result.recordset;
@@ -29,16 +29,16 @@ async function getOrders(userId) {
   }
 }
 
-async function postOrders(tripId, userId, date, status) {
+async function postReview(tripId, userId, rating, comment) {
   try {
     let pool = await sql.connect(config);
     let result = await pool
       .request()
       .input("TripId", sql.Int, tripId)
       .input("UserId", sql.Int, userId)
-      .input("Date", sql.Date, date)
-      .input("Status", sql.VarChar, status)
-      .execute("spPostOrders");
+      .input("Rating", sql.Int, rating)
+      .input("Comment", sql.VarChar, comment)
+      .execute("spPostReviewForTrip");
 
     console.log(result.recordset);
     return result.recordset;
@@ -50,4 +50,4 @@ async function postOrders(tripId, userId, date, status) {
   }
 }
 
-module.exports = { getOrders, postOrders };
+module.exports = { getReviews, postReview };

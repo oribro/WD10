@@ -3,7 +3,7 @@ CREATE OR ALTER PROCEDURE [dbo].[spTripsBetween_Date1_Date2]
 @EndDate DATETIME
 as
 begin
-    SELECT name, start_date, end_date,price, image
+    SELECT id, name, start_date, end_date,price, image
     FROM Trip
     WHERE start_date BETWEEN @StartDate AND @EndDate AND
 	end_date BETWEEN @StartDate AND @EndDate 
@@ -45,6 +45,15 @@ begin
 end
 GO
 
+CREATE OR ALTER PROCEDURE [dbo].[spGetOrdersForUser]
+    @UserId INT
+AS
+BEGIN
+    SELECT Orders.id, name, date,price, image
+    FROM Orders JOIN Trip ON trip_id = Trip.id
+    WHERE user_id = @UserId;
+END
+
 CREATE OR ALTER PROCEDURE [dbo].[spPostOrders]
 @TripId INT,
 @UserId INT,
@@ -56,6 +65,26 @@ begin
 	(@TripId, @UserId, @Date, @Status)
 end
 GO
+
+CREATE OR ALTER PROCEDURE [dbo].[spGetReviewsForTrip]
+    @TripId INT
+AS
+BEGIN
+    SELECT Review.id, trip_id, user_id, rating, comment, name, username
+    FROM Review JOIN Trip ON trip_id = Trip.id JOIN Users ON user_id = Users.id
+    WHERE trip_id = @TripId;
+END
+
+CREATE OR ALTER PROCEDURE [dbo].[spPostReviewForTrip]
+    @TripId INT,
+	@UserId INT,
+	@Rating INT,
+	@Comment VARCHAR(256)
+AS
+BEGIN
+    INSERT INTO Review (trip_id, user_id, rating, comment) VALUES
+	(@TripId, @UserId, @Rating, @Comment);
+END
 
 CREATE PROCEDURE getUserByUsername
     @username VARCHAR(50)
@@ -148,7 +177,7 @@ user_id INT,
 FOREIGN KEY (trip_id) REFERENCES Trip(id) ON DELETE CASCADE,
 FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE,
 rating INT NOT NULL,
-comment VARCHAR(50) NOT NULL
+comment VARCHAR(256) NOT NULL
 );
 
 -- Insert locations
@@ -233,9 +262,6 @@ INSERT INTO Review (trip_id, user_id, rating, comment) VALUES
 (1, 1, 5, 'Amazing trip!'),
 (2, 2, 4, 'Great experience!'),
 (3, 3, 3, 'Good but expensive'),
-(1, 1, 5, 'Loved every second!'),
-(2, 2, 4, 'Great but crowded'),
-(3, 3, 3, 'Too expensive'),
 (4, 4, 5, 'Best trip ever!'),
 (5, 5, 4, 'Amazing experience'),
 (6, 6, 5, 'Loved Tokyo and Bangkok'),
@@ -245,4 +271,4 @@ INSERT INTO Review (trip_id, user_id, rating, comment) VALUES
 (10, 10, 5, 'Hollywood was magical!');
 
 
-SELECT * FROM Trip
+SELECT * FROM Review

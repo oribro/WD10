@@ -111,6 +111,7 @@
 
             const result = await res.json();
             alert(result.message);
+            if (res.status === 201) window.location.href = "/signin.html";
           } catch (err) {
             console.error("Signup failed", err);
             alert("Signup failed. See console for details.");

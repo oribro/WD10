@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+  <link rel="stylesheet" href="index.css" />
+  <head>
+    <meta charset="UTF-8" />
+    <title>ההזמנות שלי</title>
+  </head>
+  <body>
+    <div style="margin-bottom: 100px">
+      <button
+        onclick="signOut()"
+        style="
+          position: absolute;
+          top: 20px;
+          left: 20px;
+          padding: 10px 20px;
+          margin: 10px 20px;
+          width: 20%;
+          background-color: #d9534f;
+          color: white;
+          border: none;
+          border-radius: 8px;
+          cursor: pointer;
+        "
+      >
+        התנתק
+      </button>
+      <button
+        onclick="backToIndex()"
+        style="
+          position: absolute;
+          top: 20px;
+          right: 20px;
+          padding: 10px 20px;
+          margin: 10px 20px;
+          width: 20%;
+          background-color: blue;
+          color: white;
+          border: none;
+          border-radius: 8px;
+          cursor: pointer;
+        "
+      >
+        חזרה לעמוד הראשי
+      </button>
+    </div>
+
+    <div id="myDiv"></div>
+
+    <script src="myorders.js"></script>
+  </body>
+</html>

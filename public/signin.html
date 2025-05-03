@@ -94,7 +94,7 @@
             });
 
             const result = await res.json();
-            if (res.status === 200) window.location.href = "/protected";
+            if (res.status === 200) window.location.href = "/";
             else alert(result.message);
           } catch (err) {
             console.error("Login failed", err);
