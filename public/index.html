@@ -1,54 +1,59 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
-  <link rel="stylesheet" href="index.css" />
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>טיולים</title>
+    <link rel="stylesheet" href="index.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
   </head>
   <body>
-    <button
-      onclick="goToMyOrders()"
-      style="
-        width: 20%;
-        margin-top: 20px;
-        padding: 10px 20px;
-        background-color: #2b5dad;
-        color: white;
-        border: none;
-        cursor: pointer;
-      "
-    >
-      ההזמנות שלי
-    </button>
-    <button
-      onclick="signOut()"
-      style="
-        position: absolute;
-        top: 20px;
-        left: 20px;
-        padding: 10px 20px;
-        margin: 10px 20px;
-        width: 20%;
-        background-color: #d9534f;
-        color: white;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-      "
-    >
-      התנתק
-    </button>
-    <form id="dateForm">
-      <label for="startDate">תאריך התחלה:</label>
-      <input type="date" id="startDate" name="startDate" />
+    <div class="toast-container" id="toastContainer"></div>
+    
+    <nav class="navbar">
+      <div class="logo">
+        <h1>טיולים</h1>
+      </div>
+      <div class="nav-buttons">
+        <button onclick="goToMyOrders()" class="nav-button orders-btn">
+          <span class="icon">📋</span>
+          ההזמנות שלי
+        </button>
+        <button onclick="signOut()" class="nav-button signout-btn">
+          <span class="icon">🚪</span>
+          התנתק
+        </button>
+      </div>
+    </nav>
 
-      <label for="endDate">תאריך סיום:</label>
-      <input type="date" id="endDate" name="endDate" />
+    <main class="main-content">
+      <section class="search-section">
+        <h2>חיפוש טיולים</h2>
+        <form id="dateForm" class="date-form">
+          <div class="form-group">
+            <label for="startDate">תאריך התחלה:</label>
+            <input type="date" id="startDate" name="startDate" />
+          </div>
 
-      <button type="button" onclick="submitDates()">שלח תאריכים</button>
-    </form>
+          <div class="form-group">
+            <label for="endDate">תאריך סיום:</label>
+            <input type="date" id="endDate" name="endDate" />
+          </div>
 
-    <div id="tripContainer"></div>
+          <button type="button" onclick="submitDates()" class="search-btn">
+            <span class="icon">🔍</span>
+            חפש טיולים
+          </button>
+        </form>
+      </section>
+
+      <section class="results-section">
+        <div id="tripContainer"></div>
+        <div id="loading" class="loading-spinner" style="display: none;">
+          <div class="spinner"></div>
+        </div>
+      </section>
+    </main>
 
     <script src="index.js"></script>
   </body>

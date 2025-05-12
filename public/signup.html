@@ -5,63 +5,205 @@
     <title>Signup Form</title>
     <style>
       body {
-        font-family: Arial, sans-serif;
-        background: #f4f7f8;
+        font-family: 'Segoe UI', Arial, sans-serif;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
         display: flex;
         justify-content: center;
         align-items: center;
         height: 100vh;
+        margin: 0;
+        padding: 20px;
       }
 
       .form-container {
         background: white;
-        padding: 30px;
-        border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+        border-radius: 16px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
         width: 100%;
-        max-width: 400px;
+        max-width: 440px;
       }
 
       h2 {
         text-align: center;
-        margin-bottom: 20px;
-        color: #333;
+        margin-bottom: 30px;
+        color: #2c3e50;
+        font-size: 28px;
+        font-weight: 600;
       }
 
       label {
         display: block;
-        margin-bottom: 10px;
-        color: #555;
+        margin-bottom: 20px;
+        color: #34495e;
+        font-weight: 500;
       }
 
       input {
         width: 100%;
-        padding: 10px;
-        margin-top: 4px;
-        margin-bottom: 15px;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        font-size: 14px;
+        padding: 12px;
+        margin-top: 8px;
+        margin-bottom: 5px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 15px;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+      }
+
+      input:focus {
+        border-color: #007bff;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+      }
+
+      input:invalid {
+        border-color: #dc3545;
+      }
+
+      input:valid {
+        border-color: #28a745;
+      }
+
+      small {
+        color: #666;
+        font-size: 13px;
+        margin-top: 6px;
+        display: block;
       }
 
       button {
         width: 100%;
-        padding: 12px;
-        background-color: #007bff;
+        padding: 14px;
+        background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
         color: white;
         border: none;
-        border-radius: 6px;
+        border-radius: 8px;
         font-size: 16px;
+        font-weight: 600;
         cursor: pointer;
-        transition: background-color 0.2s ease;
+        transition: all 0.3s ease;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
       }
 
-      button:hover {
-        background-color: #0056b3;
+      button:hover:not(:disabled) {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
+      }
+
+      button:active:not(:disabled) {
+        transform: translateY(0);
+      }
+
+      .error-message {
+        color: #dc3545;
+        font-size: 13px;
+        margin-top: 6px;
+        display: none;
+      }
+
+      .spinner {
+        width: 18px;
+        height: 18px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-top: 2px solid white;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        display: none;
+      }
+
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+
+      @media (max-width: 480px) {
+        .form-container {
+          padding: 20px;
+        }
+
+        h2 {
+          font-size: 24px;
+        }
+
+        input {
+          font-size: 14px;
+        }
+      }
+
+      /* Toast notification styles */
+      .toast-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+      }
+
+      .toast {
+        background: white;
+        border-radius: 8px;
+        padding: 16px 24px;
+        margin-bottom: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        transform: translateX(120%);
+        transition: transform 0.3s ease;
+        max-width: 350px;
+      }
+
+      .toast.show {
+        transform: translateX(0);
+      }
+
+      .toast.success {
+        border-left: 4px solid #28a745;
+      }
+
+      .toast.error {
+        border-left: 4px solid #dc3545;
+      }
+
+      .toast-icon {
+        font-size: 20px;
+      }
+
+      .toast-content {
+        flex: 1;
+      }
+
+      .toast-message {
+        margin: 0;
+        color: #2c3e50;
+        font-size: 14px;
+      }
+
+      .toast-close {
+        color: #666;
+        background: none;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+        font-size: 18px;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: color 0.2s ease;
+      }
+
+      .toast-close:hover {
+        color: #333;
       }
     </style>
   </head>
   <body>
+    <div class="toast-container" id="toastContainer"></div>
     <div class="form-container">
       <h2>Register</h2>
       <form id="signupForm">
@@ -75,34 +217,191 @@
         </label>
         <label
           >Email:
-          <input type="email" name="email" required />
+          <input type="email" name="email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" />
+          <div class="error-message" id="email-error"></div>
         </label>
         <label
           >Username:
-          <input type="text" name="username" required />
+          <input type="text" name="username" required minlength="3" pattern="[a-zA-Z0-9_-]+" />
+          <div class="error-message" id="username-error"></div>
         </label>
         <label
           >Password:
-          <input type="password" name="password" required />
+          <input type="password" name="password" required minlength="8" id="password" />
+          <small style="color: #666; display: block; margin-top: 4px;">
+            Password must be at least 8 characters long and contain uppercase, lowercase, number, and special character
+          </small>
+          <div id="password-strength" style="margin-top: 5px; font-size: 12px;"></div>
         </label>
         <label
           >Phone:
-          <input type="text" name="phone" required />
+          <input type="tel" name="phone" required pattern="[0-9]{10}" />
+          <small style="color: #666; display: block; margin-top: 4px;">
+            Enter 10-digit phone number without spaces or special characters
+          </small>
+          <div class="error-message" id="phone-error"></div>
         </label>
-        <button type="submit">Sign Up</button>
+        <button type="submit">
+          Sign Up
+          <span class="spinner" id="submit-spinner"></span>
+        </button>
       </form>
     </div>
 
     <script>
+      // Password strength checker
+      document.getElementById('password').addEventListener('input', function(e) {
+        const password = e.target.value;
+        const strengthDiv = document.getElementById('password-strength');
+        const hasUpper = /[A-Z]/.test(password);
+        const hasLower = /[a-z]/.test(password);
+        const hasNumber = /[0-9]/.test(password);
+        const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+        const isLongEnough = password.length >= 8;
+
+        let strength = 0;
+        let message = '';
+        let color = '';
+
+        if (hasUpper) strength++;
+        if (hasLower) strength++;
+        if (hasNumber) strength++;
+        if (hasSpecial) strength++;
+        if (isLongEnough) strength++;
+
+        switch(strength) {
+          case 0:
+          case 1:
+            message = 'Very Weak';
+            color = '#ff4444';
+            break;
+          case 2:
+            message = 'Weak';
+            color = '#ffaa00';
+            break;
+          case 3:
+            message = 'Medium';
+            color = '#ffff00';
+            break;
+          case 4:
+            message = 'Strong';
+            color = '#00ff00';
+            break;
+          case 5:
+            message = 'Very Strong';
+            color = '#00cc00';
+            break;
+        }
+
+        strengthDiv.textContent = `Password Strength: ${message}`;
+        strengthDiv.style.color = color;
+      });
+
+      // Form validation functions
+      function validateEmail(email) {
+        const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        return re.test(email);
+      }
+
+      function validatePhone(phone) {
+        const re = /^[0-9]{10}$/;
+        return re.test(phone);
+      }
+
+      function validatePassword(password) {
+        return password.length >= 8 &&
+               /[A-Z]/.test(password) &&
+               /[a-z]/.test(password) &&
+               /[0-9]/.test(password) &&
+               /[!@#$%^&*(),.?":{}|<>]/.test(password);
+      }
+
+      function showError(elementId, message) {
+        const errorDiv = document.getElementById(elementId);
+        errorDiv.textContent = message;
+        errorDiv.style.display = 'block';
+      }
+
+      function clearErrors() {
+        document.querySelectorAll('.error-message').forEach(div => {
+          div.style.display = 'none';
+        });
+      }
+
+      // Toast notification functions
+      function showToast(message, type = 'success') {
+        const container = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        
+        const icon = type === 'success' ? '✓' : '✕';
+        const iconColor = type === 'success' ? '#28a745' : '#dc3545';
+        
+        toast.innerHTML = `
+          <span class="toast-icon" style="color: ${iconColor}">${icon}</span>
+          <div class="toast-content">
+            <p class="toast-message">${message}</p>
+          </div>
+          <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+        `;
+        
+        container.appendChild(toast);
+        
+        // Trigger reflow to enable transition
+        toast.offsetHeight;
+        toast.classList.add('show');
+        
+        // Auto remove after 5 seconds
+        setTimeout(() => {
+          toast.classList.remove('show');
+          setTimeout(() => toast.remove(), 300);
+        }, 5000);
+      }
+
       document
         .getElementById("signupForm")
         .addEventListener("submit", async (e) => {
           e.preventDefault();
+          clearErrors();
 
           const formData = new FormData(e.target);
           const data = Object.fromEntries(formData.entries());
+          
+          // Validate form data
+          let hasErrors = false;
+          
+          if (!validateEmail(data.email)) {
+            showError('email-error', 'Please enter a valid email address');
+            hasErrors = true;
+          }
+          
+          if (data.username.length < 3 || !/^[a-zA-Z0-9_-]+$/.test(data.username)) {
+            showError('username-error', 'Username must be at least 3 characters and contain only letters, numbers, underscores, and hyphens');
+            hasErrors = true;
+          }
+          
+          if (!validatePassword(data.password)) {
+            showError('password-error', 'Password does not meet requirements');
+            hasErrors = true;
+          }
+          
+          if (!validatePhone(data.phone)) {
+            showError('phone-error', 'Please enter a valid 10-digit phone number');
+            hasErrors = true;
+          }
 
+          if (hasErrors) {
+            showToast('Please fix the errors in the form', 'error');
+            return;
+          }
+
+          const submitButton = e.target.querySelector('button[type="submit"]');
+          const spinner = document.getElementById('submit-spinner');
+          
           try {
+            submitButton.disabled = true;
+            spinner.style.display = 'inline-block';
+            
             const res = await fetch("/signup", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -110,11 +409,22 @@
             });
 
             const result = await res.json();
-            alert(result.message);
-            if (res.status === 201) window.location.href = "/signin.html";
+            
+            if (res.ok) {
+              showToast(result.message || 'Registration successful!');
+              // Redirect after a short delay to show the success message
+              setTimeout(() => {
+                if (res.status === 201) window.location.href = "/signin.html";
+              }, 1500);
+            } else {
+              throw new Error(result.message || 'Registration failed');
+            }
           } catch (err) {
             console.error("Signup failed", err);
-            alert("Signup failed. See console for details.");
+            showToast(err.message || "Registration failed. Please try again.", 'error');
+          } finally {
+            submitButton.disabled = false;
+            spinner.style.display = 'none';
           }
         });
     </script>
