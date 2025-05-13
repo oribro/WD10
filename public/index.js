@@ -149,9 +149,9 @@ async function orderTrip(tripId) {
     }
     
     if (response.ok) {
-      showToast(data.message || 'ההזמנה בוצעה בהצלחה! 🎉');
+      showToast('ההזמנה בוצעה בהצלחה! 🎉');
     } else {
-      throw new Error(data.error || data.message || 'הזמנה נכשלה');
+      throw new Error('הזמנה נכשלה');
     }
   } catch (err) {
     console.error("שגיאה בהזמנה:", err);

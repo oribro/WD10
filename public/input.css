@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    .trip-card {
+        @apply bg-white rounded-lg shadow-md overflow-hidden m-4 max-w-sm mx-auto transition-transform hover:scale-105;
+    }
+
+    .trip-card img {
+        @apply w-full h-48 object-cover;
+    }
+
+    .trip-card .info {
+        @apply p-4;
+    }
+
+    .trip-card h3 {
+        @apply text-xl font-bold mb-2 text-green-800;
+    }
+
+    .trip-card p {
+        @apply text-gray-600 mb-2;
+    }
+
+    .btn {
+        @apply px-6 py-2 rounded-lg text-white font-medium transition-colors duration-200 ease-in-out;
+    }
+
+    .btn-primary {
+        @apply btn bg-blue-600 hover:bg-blue-700;
+    }
+
+    .btn-danger {
+        @apply btn bg-red-600 hover:bg-red-700;
+    }
+}

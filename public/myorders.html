@@ -1,51 +1,27 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
-  <link rel="stylesheet" href="index.css" />
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ההזמנות שלי</title>
+    <link rel="stylesheet" href="myorders.css" />
   </head>
-  <body>
-    <div style="margin-bottom: 100px">
-      <button
-        onclick="signOut()"
-        style="
-          position: absolute;
-          top: 20px;
-          left: 20px;
-          padding: 10px 20px;
-          margin: 10px 20px;
-          width: 20%;
-          background-color: #d9534f;
-          color: white;
-          border: none;
-          border-radius: 8px;
-          cursor: pointer;
-        "
-      >
-        התנתק
-      </button>
-      <button
-        onclick="backToIndex()"
-        style="
-          position: absolute;
-          top: 20px;
-          right: 20px;
-          padding: 10px 20px;
-          margin: 10px 20px;
-          width: 20%;
-          background-color: blue;
-          color: white;
-          border: none;
-          border-radius: 8px;
-          cursor: pointer;
-        "
-      >
-        חזרה לעמוד הראשי
-      </button>
-    </div>
+  <body class="bg-gray-100 min-h-screen p-6">
+    <div class="container mx-auto">
+      <div class="flex justify-between items-center mb-16">
+        <button onclick="backToIndex()" class="btn-primary">
+          חזרה לעמוד הראשי
+        </button>
+        <button onclick="signOut()" class="btn-danger">
+          התנתק
+        </button>
+        
+      </div>
 
-    <div id="myDiv"></div>
+      <div id="myDiv" class="max-w-4xl mx-auto">
+        <!-- Content will be dynamically inserted here -->
+      </div>
+    </div>
 
     <script src="myorders.js"></script>
   </body>
